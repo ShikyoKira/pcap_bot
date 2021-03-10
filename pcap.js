@@ -8,7 +8,7 @@ const matcher = /steamid:([0-9]+)/i;
 const lostmatcher = /Application closed connection/i;
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;    
 const { exec } = require('child_process');
-const playerlistpath = `${jobebotpath}/playerlist/`;
+const playerlistpath = `${jobebotpath}/playerlist`;
 const url = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamkey}&steamids=`;
 
 var ipmap = new Map();
@@ -22,6 +22,9 @@ function httpGet(theUrl)
     return JSON.parse(xmlHttp.responseText);
 }
 
+exec(`mkdir ${playerlistpath}`);
+exec(`mkdir ${playerlistpath}/online`);
+exec(`mkdir ${playerlistpath}/offline`);
 console.log("Listening on " + pcap_session.device_name);
 
 pcap_session.on('packet', function (raw_packet) {
@@ -40,8 +43,8 @@ pcap_session.on('packet', function (raw_packet) {
 	var resp = httpGet(url + found[1]);
 	var name = resp.response.players[0].personaname;
 	ipmap.set(ip, name);
-	exec(`cat > "${playerlistpath}online/${name}"`);
-        exec(`rm "${playerlistpath}offline/${name}"`);
+	exec(`cat > "${playerlistpath}/online/${name}"`);
+        exec(`rm "${playerlistpath}/offline/${name}"`);
 	//exec(`node ~/notify_bot/index.js "*${name}* has connected"`);
 	return;
     }
@@ -59,8 +62,8 @@ pcap_session.on('packet', function (raw_packet) {
     }
 
     name = ipmap.get(ip);
-    exec(`cat > "${playerlistpath}offline/${name}"`);
-    exec(`rm "${playerlistpath}online/${name}"`);
+    exec(`cat > "${playerlistpath}/offline/${name}"`);
+    exec(`rm "${playerlistpath}/online/${name}"`);
     //exec(`node ~/notify_bot/index.js "*${name}* has disconnected"`);
     ipmap.delete(ip);
 });
