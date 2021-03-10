@@ -70,3 +70,35 @@ const pcap = require("pcap");
 9. Press ESC and type `:wq!` to save and quit
 
 <br>
+
+## Operations
+
+- To start the bot
+
+```
+pm2 start pcap.js
+```
+
+<br>
+
+- To stop the bot
+
+```
+pm2 stop pcap.js
+```
+
+<br>
+
+- To restart the bot
+
+```
+pm2 restart pcap.js
+```
+
+<br>
+
+- To check the logs
+
+```
+pm2 logs
+```
