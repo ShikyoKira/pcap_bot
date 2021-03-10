@@ -42,7 +42,7 @@ pcap_session.on('packet', function (raw_packet) {
 	ipmap.set(ip, name);
 	exec(`cat > "${playerlistpath}online/${name}"`);
         exec(`rm "${playerlistpath}offline/${name}"`);
-	exec(`node ~/notify_bot/index.js "*${name}* has connected"`);
+	//exec(`node ~/notify_bot/index.js "*${name}* has connected"`);
 	return;
     }
 
@@ -61,6 +61,6 @@ pcap_session.on('packet', function (raw_packet) {
     name = ipmap.get(ip);
     exec(`cat > "${playerlistpath}offline/${name}"`);
     exec(`rm "${playerlistpath}online/${name}"`);
-    exec(`node ~/notify_bot/index.js "*${name}* has disconnected"`);
+    //exec(`node ~/notify_bot/index.js "*${name}* has disconnected"`);
     ipmap.delete(ip);
 });
