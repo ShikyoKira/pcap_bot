@@ -1,14 +1,15 @@
-const privateip = '<PRIVATE_IP>';
+const privateip = '<PRIVATE IP>';
 const steamkey = '<STEAM_WEB_API_KEY>';
 const jobebotpath = '<PATH_TO_JOBE_BOT>';
+
 const pcap = require("pcap");
 const pcap_session = pcap.createSession("ens4", { filter : `src not ${privateip} and port 2456` });
 const matcher = /steamid:([0-9]+)/i;
 const lostmatcher = /Application closed connection/i;
-const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest,    
-const url = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steam}&steamids=`;
+const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;    
 const { exec } = require('child_process');
 const playerlistpath = `${jobebotpath}/playerlist/`;
+const url = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamkey}&steamids=`;
 
 var ipmap = new Map();
 
@@ -41,7 +42,7 @@ pcap_session.on('packet', function (raw_packet) {
 	ipmap.set(ip, name);
 	exec(`cat > "${playerlistpath}online/${name}"`);
         exec(`rm "${playerlistpath}offline/${name}"`);
-	//exec(`node ~/notify_bot/index.js "${name} has connected"`);
+	exec(`node ~/notify_bot/index.js "*${name}* has connected"`);
 	return;
     }
 
@@ -60,6 +61,6 @@ pcap_session.on('packet', function (raw_packet) {
     name = ipmap.get(ip);
     exec(`cat > "${playerlistpath}offline/${name}"`);
     exec(`rm "${playerlistpath}online/${name}"`);
-    //exec(`node ~/notify_bot/index.js "${name} has disconnected"`);
+    exec(`node ~/notify_bot/index.js "*${name}* has disconnected"`);
     ipmap.delete(ip);
 });
